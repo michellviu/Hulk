@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\proyectos\\Hulk\\Hulk.csproj": {}
+    "D:\\proyectos\\HulkRepo\\Hulk\\Hulk.csproj": {}
   },
   "projects": {
-    "D:\\proyectos\\Hulk\\Hulk.csproj": {
+    "D:\\proyectos\\HulkRepo\\Hulk\\Hulk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\proyectos\\Hulk\\Hulk.csproj",
+        "projectUniqueName": "D:\\proyectos\\HulkRepo\\Hulk\\Hulk.csproj",
         "projectName": "Hulk",
-        "projectPath": "D:\\proyectos\\Hulk\\Hulk.csproj",
+        "projectPath": "D:\\proyectos\\HulkRepo\\Hulk\\Hulk.csproj",
         "packagesPath": "C:\\Users\\miche\\.nuget\\packages\\",
-        "outputPath": "D:\\proyectos\\Hulk\\obj\\",
+        "outputPath": "D:\\proyectos\\HulkRepo\\Hulk\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\miche\\AppData\\Roaming\\NuGet\\NuGet.Config"

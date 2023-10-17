@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-
 Funciones funciones = new Funciones();
 
 string[] parametros = new string[] { "x" };
@@ -9,19 +8,12 @@ funciones.NombreFunciones.Add("print");
 funciones.Diccfunciones["print"] = "x";
 funciones.Diccnameparametros["print"] = parametros;
 
-string[] parametros2 = new string[] { "x", "y" };
-funciones.NombreFunciones.Add("Sum");
-funciones.Diccfunciones["Sum"] = "x+y";
-funciones.Diccnameparametros["Sum"] = parametros2;
-
-
 while (true)
 {
     Console.WriteLine("Introduce tu codigo");
-     string input = "if(let x=2 in x == 2) x else 2;";
-    //Let_In v = new Let_In();
-    //string input = Console.ReadLine()!;
-    if (input == "s") break;
+    Console.Write(">");
+    string input = Console.ReadLine()!;
+    if (input == "S") break;
 
     input = Regex.Replace(input, "\\s+", " ").Trim();
 
@@ -37,9 +29,21 @@ while (true)
     }
     try
     {
-        Console.WriteLine(EvaluadorExpresiones.QueEs(input, funciones));
+        string result = EvaluadorExpresiones.QueEs(input, funciones);
+        if (Expresiones.EsString(result).Success)
+        {
+            result = result.Remove(0, 1).Trim();
+            result = result.Remove(result.Length - 1).Trim();
+            Console.WriteLine(result);
+        }
+        else
+            Console.WriteLine(result.Trim());
     }
     catch (ParametroVacio)
+    {
+        continue;
+    }
+    catch (FuncionAsignada)
     {
         continue;
     }
@@ -67,11 +71,31 @@ while (true)
     {
         continue;
     }
+    catch (ParteBooleanaIncorrecta)
+    {
+        continue;
+    }
+    catch (ParteiFVacia)
+    {
+        continue;
+    }
+    catch (ParteElseVacia)
+    {
+        continue;
+    }
     catch (VariableNoAsignada)
     {
         continue;
     }
     catch (VariableAsignada)
+    {
+        continue;
+    }
+    catch (ErrorSintacticoIf)
+    {
+        continue;
+    }
+    catch (ErrorSintacticoElse)
     {
         continue;
     }

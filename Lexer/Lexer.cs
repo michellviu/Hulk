@@ -74,6 +74,7 @@ public static class Lexer
             case '>': return true;
             case ' ': return true;
             case '"': return true;
+            case '@': return true;
         }
         return false;
     }
@@ -108,12 +109,12 @@ public static class Lexer
                 case "=": return true;
             }
         }
-        switch (caracter2)
+       /* switch (caracter2)
         {
             case "<": return true;
             case ">": return true;
 
-        }
+        }*/
 
         return false;
 

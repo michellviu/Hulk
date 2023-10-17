@@ -7,6 +7,7 @@ public class Let_In
 
     public static int posl = 0;
     public static int posIn = 0;
+    public static int posEmIn = 0;
     public static int posT = 0;
 
     //Metodo para definir una variable con un nombre y un valor
@@ -32,7 +33,9 @@ public class Let_In
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
-    //Metodo para dividir la asignacion de cada una de las variables
+    //Metodo para dividir una expresion LetIn
+    //El funcionamiento se basa en buscar el in que le corresponde a la instruccion let, asi como verificar que ni el cuerpo
+    //ni la declaracion de variables sea vacio
     public static string[] DivideLet_In(List<string> tokens)
     {
         int cont = 0;
@@ -41,13 +44,10 @@ public class Let_In
         int postermina = tokens.Count;
         Let_In.posT = tokens.Count;
         bool entro = true;
-        // List<string>[] partes = new List<string>[2];
         List<string> partelet = new List<string>();
         List<string> partein = new List<string>();
-        // partes[0] = partelet;
-        // partes[1] = partein;
         for (int i = 0; i < tokens.Count; i++)
-        {
+        {   //Encontrar el let llevando un contador
             if (tokens[i] == "let")
             {
                 if (poslet == 0 && entro)
@@ -58,6 +58,7 @@ public class Let_In
                 }
                 cont++;
             }
+            //Encontrar el In correspondiente
             else if (tokens[i] == "in")
             {
                 cont--;
@@ -69,29 +70,54 @@ public class Let_In
                 }
             }
         }
-        for (int i = posin; i < tokens.Count; i++)
-        {
-            if (tokens[i] == ")")
-            {
-                postermina = i;
-                posT = i;
-                break;
-            }
-
-        }
+        //Comprobar que hay la misma cantidad de let que de in
         if (cont > 0)
             throw new ErrorSintacticoLet(poslet);
 
         if (cont < 0)
             throw new ErrorSintacticoIn(posin);
 
+        /* if (tokens[posin + 1] == "(")
+         {
+             int cont2 = 0;
+             posEmIn = posin + 1;
+             for (int i = posin + 1; i < tokens.Count; i++)
+             {
+                 if (tokens[i] == "(")
+                 {
+                     cont2++;
+                 }
+                 if (tokens[i] == ")")
+                 {
+                     cont2--;
+                     if (cont2 == 0)
+                     {
+                         postermina = i;
+                         posT = i;
+                         break;
+                     }
+                 }
+
+             }
+         }*/
+
         for (int i = poslet + 1; i < posin; i++)
         {
             partelet.Add(tokens[i]);
         }
-        for (int i = posin + 1; i < postermina; i++)
+        if (tokens[posin + 1] == "(")
         {
-            partein.Add(tokens[i]);
+            for (int i = posin + 2; i < postermina; i++)
+            {
+                partein.Add(tokens[i]);
+            }
+        }
+        else
+        {
+            for (int i = posin + 1; i < postermina; i++)
+            {
+                partein.Add(tokens[i]);
+            }
         }
         if (partelet == null) throw new ParteLetVacia();
         if (partein == null) throw new ParteInVacia();
@@ -103,7 +129,7 @@ public class Let_In
         return DivisionLet;
 
     }
-
+    //Metodo para dividir la declaracion de variables cuando se tratar de la asignacion de varias variables
     public static List<List<string>> DivideVariables(List<string> tokens, Funciones funciones1)
     {
         // List<string> tokens = new List<string>();
@@ -136,7 +162,6 @@ public class Let_In
             if (funciones1.NombreFunciones.Contains(tokens[i]))
             {
                 int cont1 = 0;
-                //bool bandera = true;
                 int posCierre = 0;
                 if (!EvaluadorAritmetico.ParentesisBalanceados(String.Join(" ", tokens)))
                 {
@@ -146,7 +171,6 @@ public class Let_In
                 {
                     if (tokens[i + 1] != "(")
                     {
-                        //throw new SeEspreaParentesis(tokens[i]);
                         break;
                     }
                     if (tokens[j] == "(")
@@ -193,7 +217,7 @@ public class Let_In
         return variables;
 
     }
-
+    //Metodo para asignar el valor a una variable 
     public static void AsignaVariable(List<string> item, Dictionary<string, string> variables, Funciones funciones1)
     {
         //caracter para separar
@@ -211,13 +235,13 @@ public class Let_In
 
         Define(name, EvaluadorExpresiones.QueEs(value, funciones1), variables);
     }
-
+    //Metodo para determinar si un input es una variable
     public static bool EsVariable(string v)
-    {
+    {   //Patron de variables
         string variable = @"^[a-zA-Z]+[\w]*$";
         Match match = Regex.Match(v, variable);
         if (match.Success)
-        {
+        {   //Excluir el caso de que sea una palabra reservada
             for (int i = 0; i < palabrasreservadas.Length; i++)
             {
                 if (v == palabrasreservadas[i]) return false;
@@ -226,20 +250,20 @@ public class Let_In
         }
         return false;
     }
-
+    //Metodo para guardar el valor de cada variable en un diccionario
     public static void GuardarVariables(List<List<string>> variables, Dictionary<string, string> Diccvariables, Funciones funciones1)
     {
 
         foreach (var item in variables)
         {
+            if (item.Count <= 2)
+            { throw new Asignacion(); }
             if (EsVariable(item[0]) && item[1] == "=")
             {
                 AsignaVariable(item, Diccvariables, funciones1);
             }
             else if (!EsVariable(item[0]))
                 throw new VariableNoValida(item[0]);
-            else
-                throw new Asignacion();
 
         }
 
@@ -275,7 +299,7 @@ public class Let_In
             }
             else if (char.IsLetter(c) && !recorriendostring)//Si es una letra y no estamos recorriendo un string
             {                                               // significa que estamos leyendo una variable
-                //Estamos leyendo una variable
+                                                            //Estamos leyendo una variable
                 recorriendovariable = true;
                 variableactual += c;
             }
@@ -297,6 +321,8 @@ public class Let_In
                 }
                 if (reservada) //Si coincide con una palabra reservada estamos seguros de que no es una variable
                 {              //y por tanto la sumamos al resultado
+                    //Verificar si es una declaracion de variables dentro de otra declaracion de variables
+                    //Con el objetivo de verificar si la variable que se usa esta declarada o no
                     if (variableactual == "let")
                     {
                         int aux;
@@ -308,10 +334,12 @@ public class Let_In
                                 aux = j;
                                 aux2 = input.Substring(i, aux - i);
                                 i = j;
+                                //Si la variable ya esta declarada en ese ambito lanzar una excepcion
                                 if (variables.ContainsKey(aux2.Trim()))
                                 {
                                     throw new VariableAsignada(aux2);
                                 }
+                                //En caso contrario agregar al resultado
                                 resultado += variableactual;
                                 resultado += aux2;
                                 resultado += input[j];
@@ -336,9 +364,6 @@ public class Let_In
                     }
                     else
                         resultado += variableactual + c;
-                    //Si no lanzamos una excepcion
-                    /* else
-                         throw new VariableNoAsignada(variableactual);*/
 
                 }
                 else //Si no es una variable ni una palabra reservada la sumamos al resultado
@@ -358,76 +383,70 @@ public class Let_In
             }
             else
                 resultado += variableactual;
-            /* else
-             {
-
-                 throw new VariableNoAsignada(variableactual);
-             }*/
         }
-        //  let_In .partein = resultado;
         input = resultado;
         return input;
     }
 
-    public static string EvaluadorVariable(List<string> partein, Dictionary<string, string> Variables)
-    {
+    //Esto es un metodo secundario para Evaluar Variables, no se usa en el proyecto por ahora, pero como esta sujeto a 
+    //cambios es posible que en un futuro se use
+    /* public static List<string> EvaluadorVariable(List<string> partein,int empieza,int termina, Dictionary<string, string> Variables)
+     {
 
-        //Para saber si estamos recorriendo una variable
-        // bool recorriendovariable = false;
-        //Para saber si estamos recorriendo un string
-        bool recorriendostring = false;
-        //bool recorriendolet = false;
-        //En caso de que estemos recorriendo una variable ir guardando su valor hasta el momento
-        // string variableactual = "";
-        //String final con las variables asignadas
-        List<string> resultado = new List<string>();
+         //Para saber si estamos recorriendo una variable
+         // bool recorriendovariable = false;
+         //Para saber si estamos recorriendo un string
+         bool recorriendostring = false;
+         //bool recorriendolet = false;
+         //En caso de que estemos recorriendo una variable ir guardando su valor hasta el momento
+         // string variableactual = "";
+         //String final con las variables asignadas
 
-        //Recorrer caracter a caracter el cuerpo del in
-        for (int i = 0; i < partein.Count; i++)
-        {
-            //Obtener el caracter actual
-            string c = partein[i];
-            if (c == "\"" && !recorriendostring) //Si es una comilla y no estamos recorriendo un string significa que es 
-            {                                   //el comienzo de un string
-                partein[i] = c;
-                recorriendostring = true;
-            }
-            else if (c == "\"" && recorriendostring)//Si es una comilla y estamos recorriendo un string significa que es
-            {                                      //el fin de un string
-                partein[i] = c;
-                recorriendostring = false;
-            }
-            else if (partein[i] == "let")
-            {
-                partein[i] = c;
-                c = partein[i + 1];
-                if (Variables.ContainsKey(c))
-                {
-                    throw new VariableAsignada(c);
-                }
+         //Recorrer caracter a caracter el cuerpo del in
+         for (int i = empieza; i <= termina; i++)
+         {
+             //Obtener el caracter actual
+             string c = partein[i];
+             if (c == "\"" && !recorriendostring) //Si es una comilla y no estamos recorriendo un string significa que es 
+             {                                   //el comienzo de un string
+                 partein[i] = c;
+                 recorriendostring = true;
+             }
+             else if (c == "\"" && recorriendostring)//Si es una comilla y estamos recorriendo un string significa que es
+             {                                      //el fin de un string
+                 partein[i] = c;
+                 recorriendostring = false;
+             }
+             else if (partein[i] == "let")
+             {
+                 partein[i] = c;
+                 c = partein[i + 1];
+                 if (Variables.ContainsKey(c))
+                 {
+                     throw new VariableAsignada(c);
+                 }
 
-            }
-            else if (EsVariable(c) && !recorriendostring)
-            {
-                //Si nuestro diccionario actual contiene a la variable actual la sustituimos y la agregamos al resultado
-                if (Variables.ContainsKey(c))
-                {
-                    partein[i] = Variables[c];
-                }
-                //Si no lanzamos una excepcion
-                else
-                    throw new VariableNoAsignada(c);
-            }
-            else
-            {
-                partein[i] = c;
-            }
+             }
+             else if (EsVariable(c) && !recorriendostring)
+             {
+                 //Si nuestro diccionario actual contiene a la variable actual la sustituimos y la agregamos al resultado
+                 if (Variables.ContainsKey(c))
+                 {
+                     partein[i] = Variables[c];
+                 }
+                 //Si no lanzamos una excepcion
+                 else
+                     throw new VariableNoAsignada(c);
+             }
+             else
+             {
+                 partein[i] = c;
+             }
 
-        }
-        string result = string.Join(" ", partein);
-        return result;
-    }
-
+         }
+        // string result = string.Join(" ", partein);
+         return partein;
+     }*/
 
 }
 

@@ -9,7 +9,8 @@ public static class Condicionales
     public static int posElse = 0;
     public static int postermina = tokens.Count;
     public static int posCierreB = 0;
-
+    //Metodo para dividir cada una de las partes de una expresion condicional
+    //parte booleana,cuerpo if,cuerpo else
     public static string[] DivideCondicional(List<string> tokens)
     {
         Condicionales.tokens = tokens;
@@ -56,7 +57,7 @@ public static class Condicionales
                 if (tokens[i] == ")")
                 {
                     posterminaElse = i;
-                    Condicionales.postermina = i;
+                    Condicionales.postermina = i+1;
                     break;
                 }
             }
@@ -89,10 +90,10 @@ public static class Condicionales
 
 
         if (cont > 0)
-            throw new ErrorSintacticoIf(posIf);
+            throw new ErrorSintacticoIf();
 
         if (cont < 0)
-            throw new ErrorSintacticoElse(posElse);
+            throw new ErrorSintacticoElse();
 
         for (int i = posAbre + 1; i < posCierre; i++)
         {
@@ -107,17 +108,17 @@ public static class Condicionales
             parteElse.Add(tokens[i]);
         }
 
-        // if (parteIf == null) throw new ParteLetVacia();
-        // if (parteElse == null) throw new ParteInVacia();
         string[] partesCondicional = new string[3];
         partesCondicional[0] = String.Join(" ", parteBooleana).Trim();
         partesCondicional[1] = String.Join(" ", parteIf).Trim();
         partesCondicional[2] = String.Join(" ", parteElse).Trim();
+        if(partesCondicional[1]=="") throw new ParteiFVacia();
+        if(partesCondicional[2]=="") throw new ParteElseVacia();
 
         return partesCondicional;
 
     }
-
+    //Metodo para evaluar booleanos
     public static bool EvaluadorDeBooleanos(double miembroizq, string op, double miembroder)
     {
         switch (op)
@@ -129,9 +130,9 @@ public static class Condicionales
             case ">=":
                 return miembroizq >= miembroder;
             case "<=":
-                return miembroizq >= miembroder;
+                return miembroizq <= miembroder;
             case "==":
-                return miembroizq >= miembroder;
+                return miembroizq == miembroder;
             case "!=":
                 return miembroizq != miembroder;
             case "!>":
@@ -145,20 +146,18 @@ public static class Condicionales
                 return false;
         }
     }
-
+    //Metodo para saber si una expresion es del tipo boolean
     public static bool EsBoolean(string expresion, Funciones funciones1)
     {
         Match match = Regex.Match(expresion, Expresiones.expresionBooleana);
         Match match1 = Regex.Match(expresion, Expresiones.expresionBooleanaString);
-        //Let_In let_In = new Let_In();
 
-        if (expresion == "true" || expresion == "false")
+        if (expresion == "true" || expresion == "false" || expresion == "True" || expresion == "False")
         {
             return true;
         }
         else if (match1.Success)
         {
-            // expresion = Regex.Replace(expresion, "\\s+", "");
             string[] expresionstring = expresion.Split(match1.Groups[0].ToString());
             string miiz = EvaluadorExpresiones.QueEs(expresionstring[0], funciones1);
             string mider = EvaluadorExpresiones.QueEs(expresionstring[1], funciones1);
@@ -181,7 +180,6 @@ public static class Condicionales
         }
         else if (match.Success)
         {
-            // Let_In let_In = new Let_In();
             string[] expresionAritmetica = expresion.Split(match.Groups[1].ToString());
             string miembroizq = EvaluadorExpresiones.QueEs(expresionAritmetica[0], funciones1);
             string miembroder = EvaluadorExpresiones.QueEs(expresionAritmetica[1], funciones1);
@@ -203,13 +201,16 @@ public static class Condicionales
         Match match = Regex.Match(expresion, Expresiones.expresionBooleana);
         Match match1 = Regex.Match(expresion, Expresiones.expresionBooleanaString);
 
-        if (Boolean.TryParse(expresion, out bool result))
+        if (expresion == "true" || expresion == "True")
         {
-            return result;
+            return true;
+        }
+        else if (expresion == "false" || expresion == "False")
+        {
+            return false;
         }
         else if (match1.Success)
         {
-            // Let_In let_In = new Let_In();
             expresion = Regex.Replace(expresion, "\\s+", " ");
             string[] expresionstring = expresion.Split(match1.Groups[0].ToString());
             string miiz = EvaluadorExpresiones.QueEs(expresionstring[0], funciones1);
@@ -227,10 +228,7 @@ public static class Condicionales
             }
             else
             {
-                // Let_In let_In1 = new Let_In();
                 string[] expresionAritmetica = expresion.Split(match.Groups[1].ToString());
-                //string miembroizq = expresionAritmetica[0].ToString();
-                //string miembroder = expresionAritmetica[1].ToString();
                 string miembroizq = EvaluadorExpresiones.QueEs(expresionAritmetica[0], funciones1);
                 string miembroder = EvaluadorExpresiones.QueEs(expresionAritmetica[1], funciones1);
                 if (EvaluadorDeBooleanos(double.Parse(miembroizq), match.Groups[1].ToString(), double.Parse(miembroder)))
@@ -243,10 +241,7 @@ public static class Condicionales
         }
         else if (match.Success)
         {
-            // Let_In let_In1 = new Let_In();
             string[] expresionAritmetica = expresion.Split(match.Groups[1].ToString());
-            //string miembroizq = expresionAritmetica[0].ToString();
-            //string miembroder = expresionAritmetica[1].ToString();
             string miembroizq = EvaluadorExpresiones.QueEs(expresionAritmetica[0], funciones1);
             string miembroder = EvaluadorExpresiones.QueEs(expresionAritmetica[1], funciones1);
             if (Condicionales.EvaluadorDeBooleanos(int.Parse(miembroizq), match.Groups[1].ToString(), int.Parse(miembroder)))

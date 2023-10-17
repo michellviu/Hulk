@@ -8,7 +8,8 @@ public class Expresiones
     //Expresion regular para let-in
     public static string Let_In = @"\s*let\s+(?<declaraciondevariables>.+)\s+in\s+(?<cuerpoin>.+)$";
     //Expresion regular para las expresiones condicionales
-    public static string condicional = @"\s*if\s*\((?<expresionbooleana>.+)\)\s*(?<cuerpoif>[^{]+)else\s*(?<cuerpoelse>[^{]+)";
+    public static string condicional = @"\s*if\s*\((?<expresionbooleana>.+)\)\s*(?<cuerpoif>[^{]+)(?<cuerpoelse>[^{]+)";
+    //public static string condicional =@"\s*if|else";
     //Expresion regular para expresiones aritmeticas
     public static string expresionAritmetica = @"(?<operadores>\+|-|\^|/|\*)";
     // public static string expresionAritmetica = @"^\s*\(*(\d+(\.?\d+)*)\)*\s*(?<operadores>\+|-|\^|/|\*)\s*\(*(\d+(\.?\d+)*)\)*\s*";
@@ -83,7 +84,7 @@ public class Expresiones
 
         if (!EvaluadorAritmetico.ParentesisBalanceados(expresion))
         {
-            Console.WriteLine("Los parentesis de la expresion no estan bien balanceados");
+            // Console.WriteLine("Los parentesis de la expresion no estan bien balanceados");
             throw new ParentesisNoBalanceados();
             //return false;
         }
@@ -96,6 +97,21 @@ public class Expresiones
         Match match = Regex.Match(expresion, Concatena);
         return match;
     }
-
+    public static string ConcatenarString(string[] operandos)
+    {
+        for (int i = 0; i < operandos.Length; i++)
+        {
+            if (operandos[i].Trim() != "")
+            {
+                operandos[i] = operandos[i].Trim();
+            }
+            else
+                operandos[i] = Regex.Replace(operandos[i], "\\s+", " ");
+        }
+        string resultado = String.Concat(operandos);
+        resultado = resultado.Insert(0, "\"");
+        resultado = resultado.Insert(resultado.Length, "\"");
+        return resultado;
+    }
 
 }

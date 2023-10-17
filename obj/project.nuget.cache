@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nF5KYTxhcKzUHUDQTb3WwEAamAZIuG/U4Z28ZAmdq5xBv7NdEJWliCRPPTNL+yrmY6Jii+9qzUTHZIXHk6tREQ==",
+  "dgSpecHash": "WlsUjtHAztR+JlfMD4s8FEWShSph/3K4BQSyMLCN0CnDBy/6pk9oUVfTwiaEBwY5diNpTGNz/jBnK56TCaDViQ==",
   "success": true,
-  "projectFilePath": "D:\\proyectos\\Hulk\\Hulk.csproj",
+  "projectFilePath": "D:\\proyectos\\HulkRepo\\Hulk\\Hulk.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
