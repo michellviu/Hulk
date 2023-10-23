@@ -104,10 +104,20 @@ public class EvaluadorExpresiones
                 {
                     if (Condicionales.ValorDelBooleano(partesCondicional[0], funciones))
                     {
-                        TC.RemoveRange(k, l - k);
-                        TC.RemoveRange(j, i - j + 1);
-                        input = String.Join(" ", TC);
-                        return QueEs(input, funciones);
+                        if (TC[l] != ",")
+                        {
+                            TC.RemoveRange(k, l - k + 1);
+                            TC.RemoveRange(j, i - j + 1);
+                            input = String.Join(" ", TC);
+                            return QueEs(input, funciones);
+                        }
+                        else
+                        {
+                            TC.RemoveRange(k, l - k);
+                            TC.RemoveRange(j, i - j + 1);
+                            input = String.Join(" ", TC);
+                            return QueEs(input, funciones);
+                        }
                     }
                     else
                     {
@@ -199,6 +209,12 @@ public class EvaluadorExpresiones
         else if (input == "PI")
         {
             return 3.14.ToString();
+        }
+        else if (input[0] == '(' && input[input.Length - 1] == ')')
+        {
+            input = input.Remove(0, 1);
+            input = input.Remove(input.Length - 1, 1);
+            return QueEs(input, funciones);
         }
         //De no ser ninguno de estos casos la expresion es invalida
         else

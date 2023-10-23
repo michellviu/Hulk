@@ -7,7 +7,6 @@ public class Let_In
 
     public static int posl = 0;
     public static int posIn = 0;
-    public static int posEmIn = 0;
     public static int posT = 0;
 
     //Metodo para definir una variable con un nombre y un valor
@@ -42,7 +41,7 @@ public class Let_In
         int poslet = 0;
         int posin = 0;
         int postermina = tokens.Count;
-        Let_In.posT = tokens.Count;
+       Let_In.posT = tokens.Count;
         bool entro = true;
         List<string> partelet = new List<string>();
         List<string> partein = new List<string>();

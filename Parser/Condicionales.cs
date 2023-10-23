@@ -14,12 +14,12 @@ public static class Condicionales
     public static string[] DivideCondicional(List<string> tokens)
     {
         Condicionales.tokens = tokens;
-        Condicionales.postermina = tokens.Count;
+        Condicionales.postermina = tokens.Count - 1;
         int cont1 = 0;
         int cont = 0;
         int posIf = 0;
         int posElse = 0;
-        int posterminaElse = tokens.Count;
+        int posterminaElse = tokens.Count - 1;
         int posAbre = 0;
         int posCierre = 0;
         bool entro = true;
@@ -52,15 +52,39 @@ public static class Condicionales
                     }
                 }
             }
+            entro = true;
             for (int i = posElse; i < tokens.Count; i++)
             {
-                if (tokens[i] == ")")
+                if (tokens[posElse + 1] == "(" && entro)
+                {
+                    entro = false;
+                    for (int j = posElse; j < tokens.Count; j++)
+                    {
+                        if (tokens[j] == "(")
+                        {
+                            cont1++;
+                        }
+                        else if (tokens[j] == ")")
+                        {
+                            cont1--;
+                            if (cont1 == 0)
+                            {
+                                posterminaElse = j;
+                                Condicionales.postermina = j;
+                                i = j;
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (tokens[i] == ",")
                 {
                     posterminaElse = i;
-                    Condicionales.postermina = i+1;
+                    Condicionales.postermina = i;
                     break;
                 }
             }
+            cont1 = 0;
             for (int i = posIf; i < tokens.Count; i++)
             {
                 if (tokens[i] == "(")
@@ -103,17 +127,27 @@ public static class Condicionales
         {
             parteIf.Add(tokens[i]);
         }
-        for (int i = posElse + 1; i < posterminaElse; i++)
+        if (tokens[posterminaElse] != ",")
         {
-            parteElse.Add(tokens[i]);
+            for (int i = posElse + 1; i <= posterminaElse; i++)
+            {
+                parteElse.Add(tokens[i]);
+            }
+        }
+        else
+        {
+            for (int i = posElse + 1; i < posterminaElse; i++)
+            {
+                parteElse.Add(tokens[i]);
+            }
         }
 
         string[] partesCondicional = new string[3];
         partesCondicional[0] = String.Join(" ", parteBooleana).Trim();
         partesCondicional[1] = String.Join(" ", parteIf).Trim();
         partesCondicional[2] = String.Join(" ", parteElse).Trim();
-        if(partesCondicional[1]=="") throw new ParteiFVacia();
-        if(partesCondicional[2]=="") throw new ParteElseVacia();
+        if (partesCondicional[1] == "") throw new ParteiFVacia();
+        if (partesCondicional[2] == "") throw new ParteElseVacia();
 
         return partesCondicional;
 
