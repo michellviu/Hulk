@@ -13,7 +13,7 @@ funciones.Diccnameparametros["print"] = parametros;
 while (true)
 {
     Console.WriteLine("Introduce tu codigo");
-    Console.Write(">");
+    //Console.Write(">");
     string input = Console.ReadLine()!;
     if (input == "S") break;
 

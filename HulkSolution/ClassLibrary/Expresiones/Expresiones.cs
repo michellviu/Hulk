@@ -109,7 +109,7 @@ namespace ClassLibrary
                 else
                     operandos[i] = Regex.Replace(operandos[i], "\\s+", " ");
             }
-            string resultado = String.Concat(operandos, " ");
+            string resultado = String.Join(" ", operandos);
             resultado = resultado.Insert(0, "\"");
             resultado = resultado.Insert(resultado.Length, "\"");
             return resultado;
