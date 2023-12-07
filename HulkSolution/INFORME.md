@@ -1,6 +1,10 @@
 ## Introducción
 Hulk es una aplicación de consola desarrollada con tecnología .NET Core 7.0 en el lenguaje C# que sirve como mini intérprete para el lenguaje de programación HULK.
 El proyecto cuenta con 8 clases las cuales se encargan procesar el tipo de información que sea necesaria. A continuación se explicará el funcionamiento de cada una así como el rol de cada una en el proyecto.
+Para ejecutar el programa en Visual Studio Code se debe introducir el siguiente comando:
+```bash
+dotnet run --project .\HulkSolution\ConsoleApp
+```
 
 ## Clases:
 > **EvaluadorAritmetico**: Es una clase estática cuya función en el proyecto es evaluar las expresiones netamente aritméticas. Específicamente se utiliza el `Algoritmo Shunting Yard` que es un método para analizar(parsing) las ecuaciones matemáticas especificadas en la notación de infijo (El algoritmo fue inventado por Edsger Dijkstra, para obtener más detalles del funcionamineto del algoritmo puede ser buscado fácilmente, aunque en el proyecto hay un PDF adjunto dónde se explica el funcionamiento de dicho algoritmo). Para ello cuenta con 4 métodos, que usados conjuntamente nos devuelven el resultado de cualquier expresión artmética válida.
