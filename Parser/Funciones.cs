@@ -254,7 +254,7 @@ public class Funciones
             {
                 tokens[i] = 3.14.ToString();
             }
-            //Si no esta en nuestra lista de variables y ademas tampo con las funciones matematicas basicas
+            //Si no esta en nuestra lista de variables y ademas tampoco con las funciones matematicas basicas
             //y es una variable lanzar una excepcion
             else if (Let_In.EsVariable(tokens[i]) && !recorriendostring)
             {

@@ -43,6 +43,10 @@ while (true)
     {
         continue;
     }
+    catch (SeEspreaParentesis)
+    {
+        continue;
+    }
     catch (FuncionAsignada)
     {
         continue;

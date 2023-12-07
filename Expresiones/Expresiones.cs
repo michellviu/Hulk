@@ -11,7 +11,7 @@ public class Expresiones
     public static string condicional = @"\s*if\s*\((?<expresionbooleana>.+)\)\s*(?<cuerpoif>[^{]+)(?<cuerpoelse>[^{]+)";
     //public static string condicional =@"\s*if|else";
     //Expresion regular para expresiones aritmeticas
-    public static string expresionAritmetica = @"(?<operadores>\+|-|\^|/|\*)";
+    public static string expresionAritmetica = @"(?<operadores>\+|-|\^|/|%|\*)";
     // public static string expresionAritmetica = @"^\s*\(*(\d+(\.?\d+)*)\)*\s*(?<operadores>\+|-|\^|/|\*)\s*\(*(\d+(\.?\d+)*)\)*\s*";
     //Expresion regular para expresiones booleanas
     public static string expresionBooleana = @"(?<comparadores>!=|!>|!<|>=|<=|<|>|==){1}";
@@ -108,7 +108,7 @@ public class Expresiones
             else
                 operandos[i] = Regex.Replace(operandos[i], "\\s+", " ");
         }
-        string resultado = String.Concat(operandos);
+        string resultado = String.Concat(operandos," ");
         resultado = resultado.Insert(0, "\"");
         resultado = resultado.Insert(resultado.Length, "\"");
         return resultado;

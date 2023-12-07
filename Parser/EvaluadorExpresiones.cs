@@ -8,6 +8,7 @@ public class EvaluadorExpresiones
     {
         if (input[0] == ' ' || input[input.Length - 1] == ' ')
             input = input.Trim();
+            double x;
         //Comprobar primeramente si es la declaracion de una funcion
         //de ser asi llamar a los metodos definidos de la clase funcion para realizar los procesos requeridos
         if (Funciones.IsFunction(input, Funciones.pattern).Success)
@@ -152,6 +153,10 @@ public class EvaluadorExpresiones
         //Comprobar si es una llamado de funcion
         else if (Funciones.IsLlamado(input).Success)
         {
+            if (!EvaluadorAritmetico.ParentesisBalanceados(input))
+            {
+                throw new ParentesisNoBalanceados();
+            }
             try
             {
                 return QueEs(Funciones.LlamadoFunciones(Lexer.Tokenizador(input), funciones), funciones);
@@ -161,6 +166,10 @@ public class EvaluadorExpresiones
                 throw e;
             }
             catch (ParametroVacio e)
+            {
+                throw e;
+            }
+            catch (SeEspreaParentesis e)
             {
                 throw e;
             }
@@ -215,6 +224,10 @@ public class EvaluadorExpresiones
             input = input.Remove(0, 1);
             input = input.Remove(input.Length - 1, 1);
             return QueEs(input, funciones);
+        }
+         else if(double.TryParse(input.Replace(" ",""),out x))
+        {
+            return x.ToString();
         }
         //De no ser ninguno de estos casos la expresion es invalida
         else
